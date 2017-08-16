@@ -4,9 +4,9 @@ import math
 def FileInfo(group_num, inode_num, root):
     ######Group Descipter Table######
     #group_num = 0 #0~7
-    f.seek(offset_GDT(Block_size_B))
-    f.seek(group_num*32,1)
-    sp = f.read(32*Group_cnt)
+    f.seek(offset_GDT(Block_size_B) + group_num*32) #You can merge these two lines.
+
+    sp = f.read(32*Group_cnt) # 
     intable_addr_BL = struct.unpack_from("<I", sp, 0x8)[0]
     #print "inodeaddr",hex(intable_addr_BL)
     
@@ -39,7 +39,7 @@ def FileInfo(group_num, inode_num, root):
 def ReadInode(group_num, inode_num, root):
     ######Group Descipter Table######
     #group_num = 0 #0~7
-    f.seek(offset_GDT(Block_size_B))
+    f.seek(offset_GDT(Block_size_B)) # Why we need to repeat these works every time when ReadInode is called.
     f.seek(group_num*32,1)
     sp = f.read(32*Group_cnt)
     intable_addr_BL = struct.unpack_from("<I", sp, 0x8)[0]
@@ -115,7 +115,7 @@ def ReadInode(group_num, inode_num, root):
             break
     return
 
-def offset_GDT(bsize):
+def offset_GDT(bsize): # if bsize is bigger than 4096?
     if bsize ==4096 :
         return 4096
     else:
